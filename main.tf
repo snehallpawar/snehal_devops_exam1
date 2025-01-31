@@ -18,14 +18,15 @@ resource "aws_route" "private_route" {
 }
 
 resource "aws_lambda_function" "my_lambda" {
-  filename         = "path/to/your/lambda_function.zip"  # Update this path
-  function_name    = "MyLambdaFunction"
-  handler          = "index.handler"
-  runtime          = "python3.8"
-  role             = "arn:aws:iam::168009530589:role/DevOps-Candidate-Lambda-Role"
-  memory_size      = 128
-  timeout          = 3
+  function_name = "MyLambdaFunction"
+  handler       = "index.handler"
+  runtime       = "python3.8"
+  role          = "arn:aws:iam::168009530589:role/DevOps-Candidate-Lambda-Role"
+  filename      = "lambda_function.zip"  # Path relative to the root of your repository
+  source_code_hash = filebase64sha256("lambda_function.zip")  # Ensure this is correct
+  timeout        = 3
 }
+
 
 
 output "private_subnet_id" {
