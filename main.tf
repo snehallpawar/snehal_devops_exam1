@@ -1,6 +1,4 @@
-provider "aws" {
-  region = "ap-south-1"
-}
+
 
 # Declare your VPC
 data "aws_vpc" "vpc" {
