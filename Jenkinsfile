@@ -1,35 +1,38 @@
-pipeline{
-    agent any
-    stages{
-        stage("TF Init"){
-            steps{
-                echo "Executing Terraform Init"
-                sh 'terraform init'
-            }
+    pipeline {
+  agent any
+  environment {
+    AWS_DEFAULT_REGION = 'ap-south-1'
+  }
+  stages {
+    stage('Terraform Init') {
+      steps {
+        script {
+          sh 'terraform init'
         }
-        stage("TF Validate"){
-            steps{
-                echo "Validating Terraform Code"
-                sh 'terraform validate'
-            }
-        }
-        stage("TF Plan"){
-            steps{
-                echo "Executing Terraform Plan"
-                sh 'terraform plan'
-            }
-        }
-        stage("TF Apply"){
-            steps{
-                echo "Executing Terraform Apply"
-                sh 'terraform apply --auto-approve'
-            }
-        }
-        stage("Invoke Lambda"){
-            steps{
-                echo "Invoking your AWS Lambda"
-                sh(script: 'echo Hello World'  )
-            }
-        }
+      }
     }
+    stage('Terraform Plan') {
+      steps {
+        script {
+          sh 'terraform plan'
+        }
+      }
+    }
+    stage('Terraform Apply') {
+      steps {
+        script {
+          sh 'terraform apply -auto-approve'
+        }
+      }
+    }
+    stage('Invoke Lambda') {
+      steps {
+        script {
+          sh 'aws lambda invoke --function-name MyLambdaFunction response.json --log-type Tail'
+        }
+      }
+    }
+  }
+}
+
 }
