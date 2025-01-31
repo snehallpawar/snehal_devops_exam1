@@ -1,35 +1,44 @@
-pipeline {
+pipeline{
     agent any
-    environment {
-        AWS_DEFAULT_REGION = 'ap-south-1'
-    }
-    stages {
-        stage('Terraform Init') {
-            steps {
-                script {
-                    // Add -force-copy to avoid interactive prompts during state migration
-                    sh 'terraform init -force-copy'
+    stages{
+        stage("TF Init"){
+            steps{
+                script{
+                    echo "Executing Terraform Init"
+                    sh("terraform init")
                 }
             }
         }
-        stage('Terraform Plan') {
-            steps {
-                script {
-                    sh 'terraform plan -input=false'
+        stage("TF Validate"){
+            steps{
+                script{
+                    echo "Validating Terraform Code"
+                    sh("terraform validate")
                 }
             }
         }
-        stage('Terraform Apply') {
-            steps {
-                script {
-                    sh 'terraform apply -auto-approve -input=false'
+        stage("TF Plan"){
+            steps{
+                script{
+                    echo "Executing Terraform Plan"
+                    sh("terraform plan -out=plan")
                 }
             }
         }
-        stage('Invoke Lambda') {
-            steps {
-                script {
-                    sh 'aws lambda invoke --function-name MyLambdaFunction response.json --log-type Tail'
+        stage("TF Apply"){
+            steps{
+                script{
+                    echo "Executing Terraform Apply"
+                    sh("terraform apply --auto-approve")
+                }
+                
+            }
+        }
+        stage("Invoke Lambda"){
+            steps{
+                script{
+                    echo "Invoking your AWS Lambda"
+                    sh("aws lambda invoke --function-name lambda_fun --log-type Tail response.json")
                 }
             }
         }
