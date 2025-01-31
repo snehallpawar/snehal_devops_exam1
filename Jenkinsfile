@@ -7,7 +7,8 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    sh 'terraform init -input=false'
+                    // Remove -input=false for terraform init to allow for state migration prompt
+                    sh 'terraform init'
                 }
             }
         }
