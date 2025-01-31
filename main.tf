@@ -1,11 +1,4 @@
-
-
-# Declare your VPC
-data "aws_vpc" "vpc" {
-  id = "vpc-06b326e20d7db55f9"  # Your VPC ID
-}
-
-# Define your private subnet
+# Declare your private subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id            = data.aws_vpc.vpc.id
   cidr_block        = "10.0.1.0/24"
@@ -33,12 +26,6 @@ resource "aws_lambda_function" "my_lambda" {
   filename      = "lambda_function.zip"  # Ensure your Lambda code is zipped and available
 }
 
-# IAM Role for Lambda function
-data "aws_iam_role" "lambda" {
-  name = "DevOps-Candidate-Lambda-Role"  # Ensure this IAM role exists
-}
-
 output "private_subnet_id" {
   value = aws_subnet.private_subnet.id
 }
-
